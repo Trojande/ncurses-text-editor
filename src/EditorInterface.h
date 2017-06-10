@@ -16,6 +16,7 @@ private:
 	int x,y;
     void setStatus(std::string);
 	void insertChar(char);
+	void deleteChar(bool);
     std::string getStatusLine();
     void changeMode();
     void appExit();

@@ -24,6 +24,21 @@ EditorInterface::EditorInterface() {
     realBuff = Buffer(true);
     fakeBuff = Buffer(true);
 }
+void EditorInterface::deleteChar(bool position) {
+	//position true bcksp false delete
+	std::string newString = fakeBuff.getLine(y);
+	if (position)	{
+		newString.erase(x-1,1);
+	} else {
+		newString.erase(x+1,1);
+	}
+		fakeBuff.removeLine(y);
+		fakeBuff.writeLine(newString, y);
+		realBuff.removeLine(y + transition);
+		realBuff.writeLine(newString, y + transition);
+	
+	//realBuff.writeLine(newString, y + transition);
+}
 void EditorInterface::ExecuteCommand(std::string cmd) {
 	std::transform(cmd.begin(), cmd.end(), cmd.begin(), ::tolower); //lowercase: save SAVE saVE will be works
 	if (cmd == "save") {
@@ -123,13 +138,12 @@ void EditorInterface::actionHandler(int action) {
                 setPosition(x+4,y);
                 break;
             case BACKSPACE:
+				deleteChar(true);
                 setPosition(x-1,y);
-				std::string newStr = fakeBuff.getLine(y);
-				if newStr != "" {
-					newStr.erase(str.begin()+x,1)
-				}
                 setStatus("*"+filename );
+				break;
             case DELETE:
+				deleteChar(false);
                 setPosition(x+1,y);
                 setStatus("*" + filename);
                 break;
@@ -168,7 +182,7 @@ void EditorInterface::actionHandler(int action) {
             case BACKSPACE:
                 //set
                 if (command.size() !=0) {
-					command.erase(command.end() - 1);
+					command.erase(x - 1);
 					setPosition(x-1, y);
 				}
                 break;
