@@ -1,35 +1,27 @@
 #include <ncurses.h>
-#include "textCanvas.h"
+#include "EditorInterface.h"
 
-bool init(){
-	initscr();
-	cbreak();
-	keypad(stdscr, TRUE);
-	noecho();
-	start_color();
-	//curs_set(0);
-	//set_tabsize(4);
-	return true;
+void init(){
+    initscr();
+    noecho();
+    cbreak();
+    keypad(stdscr, true);  
 }
 
 int main(int argc, char const *argv[])
 {
-	bool running = init();
-	WINDOW * local_win = stdscr;
-
-	textCanvas can;
-	can.init(argv[1]);
-	int c;
-	while (running){
-		can.update( local_win );
-		can.draw( local_win );
-		c = getch();
-		if (c == 27){
-			running = false;
-		}
-		can.handleInput( local_win, c );
-	}
-
+	
+	EditorInterface ei;
+	init();
+	if (argv[1]) 
+        ei = EditorInterface(argv[1]);
+    else
+        ei = EditorInterface();
+    
+    while (ei.refresh()) {
+        int inputButton = getch();
+        ei.handleInput(inputButton);
+    }
 	endwin();
 
 	return 0;
